@@ -51,7 +51,12 @@ void WaitForLastSubmittedFrame();
 FrameContext* WaitForNextFrameResources();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-// Main code
+
+// 設定構造体
+
+
+
+// メインコード
 int main(int, char**)
 {
     // Create application window
@@ -79,11 +84,11 @@ int main(int, char**)
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
-    // Setup Dear ImGui style
+    // Dear ImGui スタイルのセットアップ
     ImGui::StyleColorsDark();
     //ImGui::StyleColorsLight();
 
-    // Setup Platform/Renderer backends
+    // プラットフォーム/レンダラ バックエンドのセットアップ
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX12_Init(g_pd3dDevice, NUM_FRAMES_IN_FLIGHT,
         DXGI_FORMAT_R8G8B8A8_UNORM, g_pd3dSrvDescHeap,
@@ -106,17 +111,17 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
 
-    // Our state
+    // その他のステート
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-    // Main loop
+    bool frag = false;
+    // メインループ
     bool done = false;
     while (!done)
     {
-        // Poll and handle messages (inputs, window resize, etc.)
-        // See the WndProc() function below for our to dispatch events to the Win32 backend.
+        // メッセージのポーリングと処理 (入力、ウィンドウのサイズ変更など)
+        // イベントを Win32 バックエンドにディスパッチする方法については、以下の WndProc() 関数を参照してください。
         MSG msg;
         while (::PeekMessage(&msg, nullptr, 0U, 0U, PM_REMOVE))
         {
@@ -128,39 +133,124 @@ int main(int, char**)
         if (done)
             break;
 
-        // Handle window screen locked
+        // ハンドルウィンドウ画面がロックされています
         if (g_SwapChainOccluded && g_pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED)
         {
+            
             ::Sleep(10);
             continue;
         }
         g_SwapChainOccluded = false;
 
-        // Start the Dear ImGui frame
+        // Dear ImGui フレームを開始します
         ImGui_ImplDX12_NewFrame();
         ImGui_ImplWin32_NewFrame();
+
         ImGui::NewFrame();
 
-        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+
+
+        // メインメニュー
+        {
+            // メインメニューを構築
+            if (ImGui::BeginMainMenuBar()) {
+
+                // メインメニューのメニュー
+                if (ImGui::BeginMenu("File"))
+                {
+                    //メニューの要素
+                    if (ImGui::MenuItem("New File")) { frag = !frag; }
+
+                    // メニューの中の開くやつ
+                    if (ImGui::BeginMenu("More"))
+                    {
+                        if (ImGui::MenuItem("New File")) {}
+
+                        ImGui::EndMenu();
+                    }
+
+                    // メニューの終了
+                    ImGui::EndMenu();
+                }
+                
+                // メインメニューのメニュー
+                if (ImGui::BeginMenu("Edit")) 
+                {
+                    // メニュー要素
+                    if(ImGui::MenuItem("Un Do")){}
+
+                    // メニューの終了
+                    ImGui::EndMenu();
+                }
+
+                if (frag)
+                {
+                    // メインメニューのメニュー
+                    if (ImGui::BeginMenu("Oppau"))
+                    {
+                        // メニュー要素
+                        if (ImGui::MenuItem("Un Do")) {}
+
+                        // メニューの終了
+                        ImGui::EndMenu();
+                    }
+                }
+
+
+
+                // メインメニューの終了
+                ImGui::EndMainMenuBar();
+
+            }
+
+        }
+
+
+
+
+
+        // 1. 大きなデモ ウィンドウを表示します (サンプル コードの大部分は ImGui::ShowDemoWindow() にあります。コードを参照して ImGui について詳しく学ぶことができます!)。
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
 
-        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+        // 2. 自分で作成した簡単なウィンドウを表示します。 Begin/End ペアを使用して名前付きウィンドウを作成します。
         {
             static float f = 0.0f;
             static int counter = 0;
 
-            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+            ImGui::Begin("Hello, world!");                          // 「Hello, world!」というウィンドウを作成します。それに追加します。
+   
+            // ウィンドウの座標を固定する
+            ImGui::SetWindowPos("Hello, world!", ImVec2{ 60,60 });
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            ImGui::Spacing();
+            // ウィンドウを動かなくする
+            //ImGui::
 
-            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Text("This is some useful text.");               // テキストを表示します (書式文字列も使用できます)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // ウィンドウの開閉状態を保存するブール値を編集します
             ImGui::Checkbox("Another Window", &show_another_window);
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // 0.0f から 1.0f までのスライダーを使用して 1 つのフロートを編集します
+            ImGui::ColorEdit3("clear color", (float*)&clear_color); // 色を表す 3 つの float を編集する
 
-            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+            if (ImGui::Button("Button"))                            // ボタンをクリックすると true を返します (ほとんどのウィジェットは編集/アクティブ化すると true を返します)
+            {
                 counter++;
+            }
             ImGui::SameLine();
             ImGui::Text("counter = %d", counter);
 
@@ -168,13 +258,15 @@ int main(int, char**)
             ImGui::End();
         }
 
-        // 3. Show another simple window.
+        // 3. 別の単純なウィンドウを表示します。
         if (show_another_window)
         {
             ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
             ImGui::Text("Hello from another window!");
             if (ImGui::Button("Close Me"))
+            {
                 show_another_window = false;
+            }
             ImGui::End();
         }
 
